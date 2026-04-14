@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PowerCorp CRM">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f2044">
+<title>PowerCorp CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0f2044; --navy2:#1a3260; --steel:#4a6fa5;
+  --sky:#d0dff5; --skybg:#e8f0fb;
+  --bg:#f5f3ef; --bg2:#eceae5; --surface:#ffffff; --s2:#f9f8f6;
+  --b1:rgba(15,32,68,0.08); --b2:rgba(15,32,68,0.15); --b3:rgba(15,32,68,0.28);
+  --t1:#0f2044; --t2:#4a5e7a; --t3:#8a9ab5;
+  --green:#1a7f5a; --gbg:#e6f6f0; --gbd:rgba(26,127,90,0.25);
+  --amber:#c47a15; --abg:#fdf3e3; --abd:rgba(196,122,21,0.25);
+  --red:#b91c1c; --rbg:#fde8e8;
+  --purple:#6d28d9; --pbg:#ede9fe;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--t1);font-family:'IBM Plex Sans',sans-serif;font-size:13px;-webkit-font-smoothing:antialiased;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(15,32,68,.2);}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:stretch;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:12px;padding:13px 0;}
+.logo{width:32px;height:32px;border-radius:7px;background:var(--sky);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo svg{width:16px;height:16px;}
+.brand-name{font-size:14px;font-weight:600;color:#fff;letter-spacing:.02em;}
+.brand-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--sky);opacity:.65;letter-spacing:.1em;text-transform:uppercase;margin-top:1px;}
+.nav-tabs{display:flex;align-items:stretch;}
+.ntab{display:flex;align-items:center;gap:7px;padding:0 18px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid transparent;transition:all .15s;background:transparent;white-space:nowrap;}
+.ntab:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.05);}
+.ntab.active{color:#fff;border-bottom-color:var(--sky);}
+.ntab .ndot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3);flex-shrink:0;transition:background .15s;}
+.ntab.active .ndot{background:var(--sky);}
+.topbar-right{display:flex;align-items:center;gap:10px;padding:10px 0;}
+.btn-novo{background:var(--sky);color:var(--navy);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;padding:7px 14px;border-radius:5px;border:none;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s;}
+.btn-novo:hover{background:#fff;}
+.btn-importar{background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:7px 14px;border-radius:5px;border:1px solid rgba(255,255,255,.2);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+.btn-importar:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.4);}
+.search-box{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:5px;padding:6px 12px;}
+.search-box input{background:transparent;border:none;outline:none;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:12px;width:160px;}
+.search-box input::placeholder{color:rgba(255,255,255,.4);}
+.search-icon{color:rgba(255,255,255,.4);font-size:13px;}
+
+/* ── CONTENT ── */
+.content{max-width:1280px;margin:0 auto;padding:24px 24px 80px;}
+.tab-page{display:none;}
+.tab-page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.tab-page.active{animation:fadeUp .2s ease;}
+
+/* ── LEGENDA ── */
+.legenda{background:var(--navy);border-radius:var(--r);padding:18px 22px;margin-bottom:24px;display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;position:relative;}
+.leg-title{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--sky);text-transform:uppercase;letter-spacing:.14em;margin-bottom:10px;opacity:.75;}
+.leg-bloco{min-width:170px;flex:1;}
+.leg-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.leg-text{font-size:11px;color:rgba(255,255,255,.7);line-height:1.45;}
+.leg-text strong{color:#fff;font-weight:500;}
+.leg-div{width:1px;background:rgba(255,255,255,.1);align-self:stretch;flex-shrink:0;}
+.leg-tip{font-size:11px;color:rgba(255,255,255,.65);line-height:1.75;}
+.leg-tip b{color:rgba(255,255,255,.9);font-weight:500;}
+.leg-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.1);border:none;border-radius:4px;color:rgba(255,255,255,.5);cursor:pointer;font-size:14px;padding:2px 8px;transition:all .15s;line-height:1.4;}
+.leg-close:hover{background:rgba(255,255,255,.2);color:#fff;}
+
+/* ── SEC ── */
+.sec{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.14em;margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
+.sec::after{content:'';flex:1;height:1px;background:var(--b1);}
+.sec:first-child{margin-top:0;}
+
+/* ── KPI ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b2);border:1px solid var(--b2);border-radius:var(--r);overflow:hidden;margin-bottom:18px;box-shadow:0 1px 4px var(--b1);}
+.kpi-card{background:var(--surface);padding:18px 16px;}
+.kpi-card:first-child{border-left:3px solid var(--navy);}
+.kl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;}
+.kv{font-size:20px;font-weight:400;color:var(--navy);letter-spacing:-.01em;}
+.kv.green{color:var(--green);}
+.ks{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);margin-top:4px;}
+
+/* ── DASH ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px;}
+.dash-card{background:var(--surface);border:1px solid var(--b1);border-radius:var(--r);padding:20px;box-shadow:0 1px 3px var(--b1);}
+.dash-title{font-weight:500;font-size:13px;color:var(--navy);margin-bottom:14px;}
+.funil-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.funil-label{font-size:11px;color:var(--t2);width:72px;flex-shrink:0;}
+.funil-bar-bg{flex:1;height:6px;background:var(--bg2);border-radius:99px;}
+.funil-bar{height:100%;border-radius:99px;transition:width .6s ease;}
+.funil-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);min-width:20px;text-align:right;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1);}
+.stat-row:last-child{border-bottom:none;}
+.stat-label{font-size:12px;color:var(--t2);}
+.stat-val{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--navy);}
+.ativ-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b1);cursor:pointer;transition:background .1s;}
+.ativ-item:last-child{border-bottom:none;}
+.ativ-item:hover{background:var(--skybg);margin:0 -20px;padding:9px 20px;border-radius:4px;}
+.ativ-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+.ativ-info{flex:1;min-width:0;}
+.ativ-name{font-size:12px;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ativ-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);margin-top:1px;}
+.ativ-val{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);font-weight:500;white-space:nowrap;}
+
+/* ── KANBAN ── */
+.kanban-hint{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);margin-bottom:14px;}
+.kanban-wrap{overflow-x:auto;padding-bottom:16px;}
+.kanban-board{display:flex;gap:14px;min-width:max-content;align-items:flex-start;}
+.k-col{width:240px;flex-shrink:0;}
+.k-col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--b1);border-radius:var(--r);border-top:3px solid var(--navy);}
+.k-col-header.prospect{border-top-color:#94a3b8;}
+.k-col-header.ativo{border-top-color:var(--green);}
+.k-col-header.vip{border-top-color:#f59e0b;}
+.k-col-header.inativo{border-top-color:#9ca3af;}
+.k-col-title{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;}
+.k-col-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);background:var(--bg2);padding:1px 7px;border-radius:99px;}
+.k-cards{min-height:80px;display:flex;flex-direction:column;gap:8px;padding:2px;border-radius:var(--r);transition:background .15s;}
+.k-cards.drag-over{background:var(--skybg);outline:2px dashed var(--navy);outline-offset:-2px;}
+.k-card{background:var(--surface);border:1px solid var(--b1);border-radius:var(--r);padding:13px;cursor:grab;transition:all .15s;box-shadow:0 1px 3px var(--b1);user-select:none;}
+.k-card:hover{border-color:var(--b3);box-shadow:0 3px 10px var(--b1);transform:translateY(-1px);}
+.k-card:active{cursor:grabbing;}
+.k-card.dragging{opacity:.25;transform:scale(.95);box-shadow:none;pointer-events:none;}
+.k-card-top{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.k-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;}
+.k-name{font-size:12px;font-weight:500;color:var(--navy);line-height:1.3;}
+.k-canal{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);}
+.k-drag-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);border-top:1px solid var(--b1);padding-top:7px;margin-top:7px;}
+.k-drop-placeholder{min-height:60px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;}
+.drag-ghost{position:fixed;top:-999px;left:-999px;background:var(--navy);color:#fff;border-radius:5px;padding:7px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;box-shadow:0 6px 20px rgba(15,32,68,.25);white-space:nowrap;pointer-events:none;z-index:9999;}
+
+/* ── LISTA ── */
+.list-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 13px;border-radius:4px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .15s;}
+.filter-btn:hover{border-color:var(--navy);color:var(--navy);}
+.filter-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.list-select{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 10px;border-radius:4px;border:1px solid var(--b2);background:var(--surface);color:var(--t2);cursor:pointer;outline:none;}
+.list-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);margin-left:auto;}
+.table-wrap{background:var(--surface);border:1px solid var(--b2);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 4px var(--b1);}
+table{width:100%;border-collapse:collapse;}
+thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left;background:var(--s2);border-bottom:1px solid var(--b2);white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{color:var(--navy);}
+thead th.r,tbody td.r{text-align:right;}
+tbody tr{border-bottom:1px solid var(--b1);transition:background .1s;cursor:pointer;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--skybg);}
+tbody td{padding:10px 12px;font-size:12px;color:var(--navy);white-space:nowrap;}
+td.dim{color:var(--t2);}td.mono{font-family:'IBM Plex Mono',monospace;font-size:11px;}
+td.grn{color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;}
+.p-prospect{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;}
+.p-ativo{background:var(--gbg);color:var(--green);border:1px solid var(--gbd);}
+.p-vip{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.p-inativo{background:var(--bg2);color:var(--t3);border:1px solid var(--b2);}
+.p-canal-wi{background:var(--gbg);color:var(--green);}
+.p-canal-wg{background:#dcfce7;color:#166534;}
+.p-canal-ig{background:var(--pbg);color:var(--purple);}
+.p-canal-rv{background:var(--skybg);color:var(--navy2);}
+.p-canal-in{background:var(--bg2);color:var(--t2);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--t3);}
+.empty-icon{font-size:28px;margin-bottom:10px;}.empty-text{font-size:12px;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,32,68,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:12px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,32,68,.25);}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1;}
+.modal-title{font-size:15px;font-weight:500;color:var(--navy);}
+.modal-close{width:28px;height:28px;border-radius:50%;border:1px solid var(--b2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:16px;transition:all .15s;}
+.modal-close:hover{background:var(--bg2);}
+.modal-body{padding:20px 24px;}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--b1);display:flex;justify-content:flex-end;gap:10px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;}
+.form-input,.form-select,.form-textarea{background:var(--s2);border:1px solid var(--b2);border-radius:5px;padding:8px 11px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--navy);outline:none;transition:border-color .15s;width:100%;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--navy);background:var(--surface);}
+.form-textarea{resize:vertical;min-height:72px;line-height:1.6;}
+.form-sec{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.14em;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--b1);}
+.purchase-list{display:flex;flex-direction:column;gap:6px;}
+.purchase-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--s2);border-radius:5px;border:1px solid var(--b1);}
+.purchase-prod{font-size:12px;color:var(--navy);}
+.purchase-val{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);}
+.purchase-date{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);}
+.notes-list{display:flex;flex-direction:column;gap:7px;}
+.note-item{padding:10px 12px;background:var(--s2);border-radius:5px;border-left:3px solid var(--sky);}
+.note-date{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);margin-bottom:4px;}
+.note-text{font-size:12px;color:var(--t1);line-height:1.6;}
+.add-note-row{display:flex;gap:8px;margin-top:10px;}
+.add-note-input{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:5px;padding:8px 11px;font-size:13px;color:var(--navy);outline:none;}
+.add-note-input:focus{border-color:var(--navy);}
+.btn-note{background:var(--navy);color:#fff;border:none;border-radius:5px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;white-space:nowrap;transition:background .15s;}
+.btn-note:hover{background:var(--navy2);}
+.btn-primary{background:var(--navy);color:#fff;border:none;border-radius:5px;padding:9px 18px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s;}
+.btn-primary:hover{background:var(--navy2);}
+.btn-secondary{background:transparent;color:var(--t2);border:1px solid var(--b2);border-radius:5px;padding:9px 18px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s;}
+.btn-secondary:hover{border-color:var(--navy);color:var(--navy);}
+.btn-danger{background:var(--rbg);color:var(--red);border:1px solid rgba(185,28,28,.2);border-radius:5px;padding:9px 18px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s;}
+.btn-danger:hover{background:var(--red);color:#fff;}
+.wpp-btn{display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:5px;padding:7px 12px;font-size:11px;font-weight:500;cursor:pointer;text-decoration:none;transition:background .15s;}
+.wpp-btn:hover{background:#1ebe5d;}
+
+@media(max-width:900px){
+  .kpi-strip,.dash-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .nav-tabs{display:none;}
+}
+
+/* ══ MOBILE (iPhone) ══════════════════════════════════════ */
+@media(max-width:600px){
+
+  /* Safe areas para notch e home indicator do iPhone */
+  body { padding-bottom: env(safe-area-inset-bottom); }
+
+  /* Topbar compacta */
+  .topbar-inner { padding: 0 14px; }
+  .brand-sub { display: none; }
+  .brand-name { font-size: 13px; }
+  .search-box { display: none; }
+  .btn-importar { display: none; }
+  .btn-novo {
+    font-size: 11px;
+    padding: 6px 11px;
+    border-radius: 6px;
+  }
+
+  /* Conteúdo com margem para barra inferior */
+  .content {
+    padding: 16px 14px calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* Legenda oculta no mobile */
+  .legenda { display: none !important; }
+
+  /* KPIs: 2 colunas */
+  .kpi-strip { grid-template-columns: repeat(2,1fr); }
+  .kpi-card { padding: 14px 12px; }
+  .kv { font-size: 17px; }
+
+  /* Dashboard: coluna única */
+  .dash-grid { grid-template-columns: 1fr; gap: 12px; }
+  .dash-card { padding: 14px; }
+
+  /* Kanban: scroll horizontal natural */
+  .kanban-wrap { margin: 0 -14px; padding: 0 14px 16px; }
+  .k-col { width: 210px; }
+  .kanban-hint { font-size: 9px; }
+
+  /* Lista: ocultar colunas menos importantes */
+  thead th:nth-child(3),
+  thead th:nth-child(4),
+  thead th:nth-child(6),
+  tbody td:nth-child(3),
+  tbody td:nth-child(4),
+  tbody td:nth-child(6) { display: none; }
+
+  /* Modal: tela cheia no iPhone */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    border-radius: 18px 18px 0 0;
+    max-height: 92vh;
+    width: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .modal-header { padding: 16px 18px 12px; }
+  .modal-body { padding: 14px 18px; }
+  .modal-footer { padding: 12px 18px; }
+  .form-grid { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Inputs maiores para toque */
+  .form-input, .form-select, .form-textarea {
+    font-size: 16px; /* evita zoom automático do iOS */
+    padding: 10px 12px;
+  }
+
+  /* Seção labels menores */
+  .sec { font-size: 9px; margin: 20px 0 10px; }
+
+  /* Filtros da lista: scroll horizontal */
+  .list-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-btn { flex-shrink: 0; font-size: 10px; padding: 5px 11px; }
+  .list-select { flex-shrink: 0; }
+  .list-count { display: none; }
+
+  /* Tabela responsiva */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  tbody td { padding: 9px 10px; font-size: 11px; }
+  thead th { padding: 8px 10px; }
+}
+
+/* ══ BARRA DE NAVEGAÇÃO INFERIOR (mobile) ══ */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 300;
+  justify-content: space-around;
+  align-items: stretch;
+}
+.mnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 4px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+}
+.mnav-item:active { opacity: .7; }
+.mnav-icon {
+  font-size: 20px;
+  line-height: 1;
+  transition: transform .15s;
+}
+.mnav-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,.45);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.mnav-item.active .mnav-label { color: var(--sky); }
+.mnav-item.active .mnav-icon { transform: scale(1.15); }
+
+/* Banner de instalação PWA */
+.install-banner {
+  display: none;
+  position: fixed;
+  bottom: calc(70px + env(safe-area-inset-bottom));
+  left: 12px; right: 12px;
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 24px rgba(15,32,68,.35);
+  z-index: 400;
+  align-items: center;
+  gap: 12px;
+}
+.install-banner.show { display: flex; }
+.install-banner-text { flex: 1; }
+.install-banner-title { font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 3px; }
+.install-banner-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(255,255,255,.55); line-height: 1.5; }
+.install-banner-close { background: none; border: none; color: rgba(255,255,255,.4); font-size: 18px; cursor: pointer; padding: 4px; flex-shrink: 0; }
+
+@media(max-width:600px){
+  .mobile-nav { display: flex; }
+  /* Ocultar nav tabs do desktop no mobile */
+  .nav-tabs { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="#0f2044"/>
+          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="#0f2044" opacity=".5"/>
+          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="#0f2044" opacity=".5"/>
+          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="#0f2044"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">PowerCorp</div>
+        <div class="brand-sub">CRM · Clientes</div>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="ntab active" onclick="goTab('dashboard',this)"><span class="ndot"></span>Dashboard</button>
+      <button class="ntab"        onclick="goTab('kanban',this)"><span class="ndot"></span>Kanban</button>
+      <button class="ntab"        onclick="goTab('lista',this)"><span class="ndot"></span>Lista</button>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Buscar cliente..." oninput="buscar(this.value)">
+      </div>
+      <button class="btn-novo" onclick="abrirModal()">+ Novo cliente</button>
+      <label class="btn-importar" title="Importar clientes da planilha Excel">
+        ↑ Importar planilha
+        <input type="file" id="file-import" accept=".xlsx" onchange="importarPlanilha(this)" style="display:none">
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- LEGENDA (aparece em todas as abas, pode fechar) -->
+  <div class="legenda" id="legenda-box">
+    <div class="leg-bloco">
+      <div class="leg-title">Status dos clientes</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#94a3b8"></div><div class="leg-text"><strong>Prospect</strong> — lead novo, ainda não comprou</div></div>
+      <div class="leg-item"><div class="leg-dot" style="background:#1a7f5a"></div><div class="leg-text"><strong>Ativo</strong> — já comprou, relacionamento em andamento</div></div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div><div class="leg-text"><strong>VIP</strong> — cliente recorrente ou de alto valor</div></div>
+      <div class="leg-item"><div class="leg-dot" style="background:#9ca3af"></div><div class="leg-text"><strong>Inativo</strong> — sem interação recente</div></div>
+    </div>
+    <div class="leg-div"></div>
+    <div class="leg-bloco">
+      <div class="leg-title">As três visões</div>
+      <div class="leg-tip"><b>Dashboard</b> — totais gerais, clientes com maior gasto e funil por status</div>
+      <div class="leg-tip" style="margin-top:6px"><b>Kanban</b> — visualize e mova clientes entre etapas arrastando os cards</div>
+      <div class="leg-tip" style="margin-top:6px"><b>Lista</b> — tabela completa com filtros, busca e botão direto pro WhatsApp</div>
+    </div>
+    <div class="leg-div"></div>
+    <div class="leg-bloco">
+      <div class="leg-title">Dicas rápidas</div>
+      <div class="leg-tip"><b>+ Novo cliente</b> — cadastre nome, WhatsApp, canal e atendente</div>
+      <div class="leg-tip" style="margin-top:6px"><b>Clique num card ou linha</b> — abre o perfil completo com histórico de compras e anotações da conversa</div>
+      <div class="leg-tip" style="margin-top:6px"><b>Arrastar no Kanban</b> — muda o status automaticamente e salva na hora</div>
+    </div>
+    <button class="leg-close" onclick="fecharLegenda()">✕</button>
+  </div>
+
+  <!-- ABA: DASHBOARD -->
+  <div class="tab-page active" id="tab-dashboard">
+    <div class="sec">visão geral</div>
+    <div class="kpi-strip" id="kpi-strip"></div>
+    <div class="dash-grid">
+      <div class="dash-card"><div class="dash-title">Clientes com maior gasto</div><div id="dash-ativos"></div></div>
+      <div class="dash-card"><div class="dash-title">Funil por status</div><div id="funil-chart"></div></div>
+      <div class="dash-card"><div class="dash-title">Estatísticas</div><div id="stats-list"></div></div>
+    </div>
+  </div>
+
+  <!-- ABA: KANBAN -->
+  <div class="tab-page" id="tab-kanban">
+    <div class="sec">pipeline de clientes</div>
+    <p class="kanban-hint">⠿ segure e arraste os cards entre as colunas para mudar o status</p>
+    <div class="kanban-wrap"><div class="kanban-board" id="kanban-board"></div></div>
+  </div>
+
+  <!-- ABA: LISTA -->
+  <div class="tab-page" id="tab-lista">
+    <div class="sec">todos os clientes</div>
+    <div class="list-toolbar">
+      <button class="filter-btn active" onclick="filtrarLista('todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filtrarLista('Prospect',this)">Prospect</button>
+      <button class="filter-btn" onclick="filtrarLista('Ativo',this)">Ativo</button>
+      <button class="filter-btn" onclick="filtrarLista('VIP',this)">VIP</button>
+      <button class="filter-btn" onclick="filtrarLista('Inativo',this)">Inativo</button>
+      <select class="list-select" onchange="filtrarCanal(this.value)">
+        <option value="">Todos os canais</option>
+        <option>WhatsApp (ind.)</option><option>WhatsApp (grp.)</option>
+        <option>Instagram</option><option>Revendedor</option><option>Indicação</option>
+      </select>
+      <select class="list-select" id="atend-filter" onchange="filtrarAtendente(this.value)">
+        <option value="">Todos atendentes</option>
+      </select>
+      <span class="list-count" id="list-count"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th onclick="sortBy('nome')">Cliente ↕</th><th>Status</th><th>Canal</th>
+          <th>Atendente</th><th onclick="sortBy('totalGasto')" class="r">Total gasto ↕</th>
+          <th onclick="sortBy('ultimoContato')">Último contato ↕</th><th>Ações</th>
+        </tr></thead>
+        <tbody id="lista-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- BARRA DE NAVEGAÇÃO INFERIOR (só mobile) -->
+<nav class="mobile-nav" id="mobile-nav">
+  <button class="mnav-item active" id="mnav-dashboard" onclick="goTabMobile('dashboard',this)">
+    <span class="mnav-icon">◉</span>
+    <span class="mnav-label">Dashboard</span>
+  </button>
+  <button class="mnav-item" id="mnav-kanban" onclick="goTabMobile('kanban',this)">
+    <span class="mnav-icon">⊞</span>
+    <span class="mnav-label">Kanban</span>
+  </button>
+  <button class="mnav-item" id="mnav-lista" onclick="goTabMobile('lista',this)">
+    <span class="mnav-icon">☰</span>
+    <span class="mnav-label">Lista</span>
+  </button>
+  <button class="mnav-item" onclick="abrirModal()">
+    <span class="mnav-icon" style="width:36px;height:36px;background:var(--sky);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--navy);font-weight:300">+</span>
+    <span class="mnav-label">Novo</span>
+  </button>
+</nav>
+
+<!-- BANNER PWA (iPhone — instrução de adicionar à tela inicial) -->
+<div class="install-banner" id="install-banner">
+  <div class="install-banner-text">
+    <div class="install-banner-title">Adicionar à tela inicial</div>
+    <div class="install-banner-sub">Toque em <strong style="color:#fff">compartilhar ↑</strong> e depois <strong style="color:#fff">"Adicionar à Tela Inicial"</strong> para usar como app</div>
+  </div>
+  <button class="install-banner-close" onclick="fecharBanner()">✕</button>
+</div>
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModalOverlay(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Novo cliente</div>
+      <button class="modal-close" onclick="fecharModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-sec">dados principais</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="f-nome" placeholder="Ex: Maria Silva"></div>
+        <div class="form-group"><label class="form-label">WhatsApp *</label><input class="form-input" id="f-wpp" placeholder="(11) 99999-9999"></div>
+        <div class="form-group"><label class="form-label">Canal de origem</label>
+          <select class="form-select" id="f-canal">
+            <option>WhatsApp (ind.)</option><option>WhatsApp (grp.)</option>
+            <option>Instagram</option><option>Revendedor</option><option>Indicação</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Atendente</label><input class="form-input" id="f-atendente" placeholder="Ex: Carol"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-select" id="f-status">
+            <option>Prospect</option><option>Ativo</option><option>VIP</option><option>Inativo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-sec">histórico de compras</div>
+      <div id="compras-lista" class="purchase-list"></div>
+      <div class="form-grid" style="margin-top:10px">
+        <div class="form-group"><label class="form-label">Produto</label><input class="form-input" id="f-prod" placeholder="Ex: KPV 10mg"></div>
+        <div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input" type="number" id="f-val" placeholder="0,00"></div>
+        <div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date" id="f-data-compra"></div>
+        <div class="form-group" style="justify-content:flex-end"><label class="form-label">&nbsp;</label><button class="btn-secondary" onclick="addCompra()" style="width:100%">+ Adicionar</button></div>
+      </div>
+
+      <div class="form-sec">anotações da conversa</div>
+      <div id="notas-lista" class="notes-list"></div>
+      <div class="add-note-row">
+        <input class="add-note-input" id="f-nota" placeholder="Adicionar anotação sobre a conversa...">
+        <button class="btn-note" onclick="addNota()">Salvar</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="btn-deletar" onclick="deletarCliente()" style="display:none;margin-right:auto">Excluir</button>
+      <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-primary" onclick="salvarCliente()">Salvar cliente</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const KEY='powercorp_crm_v2';
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||demo();}catch(e){return demo();}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+
+function demo(){
+  const d=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().split('T')[0];};
+  return [
+    {id:1,nome:"Daniela O. M. e Silva",wpp:"(21) 99100-2030",canal:"WhatsApp (ind.)",atendente:"Ana",status:"VIP",ultimoContato:d(-3),compras:[{prod:"Caneta Retatrutida 60mg",val:1630,data:d(-10)},{prod:"KPV 10mg",val:364,data:d(-3)}],notas:[{texto:"Prefere PIX. Próximo pedido: Retatrutida.",data:d(-3)}]},
+    {id:2,nome:"Fabiana S. Zanfrilli",wpp:"(11) 98765-4321",canal:"Instagram",atendente:"Carol",status:"Ativo",ultimoContato:d(-7),compras:[{prod:"KPV 10mg",val:364,data:d(-7)}],notas:[{texto:"Primeiro pedido. Veio pelo Instagram.",data:d(-7)}]},
+    {id:3,nome:"Rodrigo M. Teixeira",wpp:"(11) 91234-5678",canal:"WhatsApp (ind.)",atendente:"Ana",status:"Ativo",ultimoContato:d(-5),compras:[{prod:"Semaglutida 0,5mg 3ml",val:680,data:d(-5)}],notas:[]},
+    {id:4,nome:"Clinica NovaMed SP",wpp:"(11) 3333-4444",canal:"Revendedor",atendente:"Ana",status:"VIP",ultimoContato:d(-2),compras:[{prod:"TB-500 2mg",val:2775,data:d(-2)},{prod:"BPC-157 5mg",val:3200,data:d(-15)}],notas:[{texto:"Parceira, pede quinzenalmente.",data:d(-2)}]},
+    {id:5,nome:"Amanda C. Ferreira",wpp:"(11) 97654-3210",canal:"WhatsApp (grp.)",atendente:"Carol",status:"Ativo",ultimoContato:d(-4),compras:[{prod:"PT-141 10mg",val:370,data:d(-4)}],notas:[]},
+    {id:6,nome:"Carlos H. Oliveira",wpp:"(11) 95555-1234",canal:"Instagram",atendente:"Carol",status:"Prospect",ultimoContato:d(-1),compras:[],notas:[{texto:"Interessado em Semaglutida. Pediu orçamento.",data:d(-1)}]},
+    {id:7,nome:"Patricia L. Alves",wpp:"(21) 98888-7777",canal:"Indicação",atendente:"Ana",status:"Ativo",ultimoContato:d(-8),compras:[{prod:"Hexarelin 2mg",val:290,data:d(-8)}],notas:[]},
+    {id:8,nome:"Centro Estético Lumina",wpp:"(11) 2222-3333",canal:"Revendedor",atendente:"Ana",status:"VIP",ultimoContato:d(-1),compras:[{prod:"GHK-Cu 50mg",val:2300,data:d(-1)},{prod:"PT-141 10mg",val:2320,data:d(-12)}],notas:[{texto:"Compra mensalmente.",data:d(-1)}]},
+    {id:9,nome:"Lucas A. Mendes",wpp:"(11) 94444-5555",canal:"WhatsApp (ind.)",atendente:"Carol",status:"Prospect",ultimoContato:d(-6),compras:[],notas:[{texto:"Pediu info sobre Mod GRF. Sem resposta.",data:d(-6)}]},
+    {id:10,nome:"Bruna S. Martins",wpp:"(11) 93333-2222",canal:"WhatsApp (grp.)",atendente:"Carol",status:"Inativo",ultimoContato:d(-30),compras:[{prod:"KPV 10mg",val:364,data:d(-30)}],notas:[{texto:"Comprou uma vez. Não retornou.",data:d(-30)}]},
+  ];
+}
+
+let clientes=load();
+let filtroStatus='todos',filtroCanal='',filtroAtend='',buscaTxt='';
+let sortField='nome',sortAsc=true;
+let editId=null,comprasTemp=[],notasTemp=[];
+let dragId=null,ghostEl=null;
+
+// LEGENDA
+function fecharLegenda(){document.getElementById('legenda-box').style.display='none';}
+
+// ABAS
+function goTab(id,btn){
+  document.querySelectorAll('.ntab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='kanban') renderKanban();
+  else if(id==='lista') renderLista();
+  else renderDash();
+}
+
+// NAVEGAÇÃO MOBILE (barra inferior)
+function goTabMobile(id, btn) {
+  // Atualiza barra inferior
+  document.querySelectorAll('.mnav-item').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  // Atualiza abas desktop também (mantém sincronizado)
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='kanban') renderKanban();
+  else if(id==='lista') renderLista();
+  else renderDash();
+  // Scroll para o topo
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// BANNER INSTALAÇÃO PWA
+function fecharBanner(){
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('crm_banner_fechado','1');
+}
+function mostrarBannerSeNecessario(){
+  // Só mostra no iPhone/iPad, só se não foi fechado antes, só se não está em standalone
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true;
+  const fechou = localStorage.getItem('crm_banner_fechado');
+  if(isIOS && !isStandalone && !fechou){
+    setTimeout(()=>{
+      document.getElementById('install-banner').classList.add('show');
+    }, 2500);
+  }
+}
+
+// UTILS
+const fmt  = v=>v>0?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2}):'R$ 0,00';
+const fmtk = v=>v>=1000?'R$ '+(v/1000).toFixed(1)+'k':fmt(v);
+const tg   = c=>c.compras.reduce((s,x)=>s+Number(x.val),0);
+const hoje = ()=>new Date().toISOString().split('T')[0];
+const fmtD = d=>d?new Date(d+'T12:00').toLocaleDateString('pt-BR'):'—';
+const initials = n=>n.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const avatarColor = n=>{const p=[['E8F0FB','1A3260'],['E6F6F0','1A7F5A'],['FDF3E3','C47A15'],['EDE9FE','6D28D9'],['FDE8E8','B91C1C']];return p[n.charCodeAt(0)%p.length];};
+const canalPill = c=>{const m={'WhatsApp (ind.)':'p-canal-wi','WhatsApp (grp.)':'p-canal-wg','Instagram':'p-canal-ig','Revendedor':'p-canal-rv','Indicação':'p-canal-in'};return `<span class="pill ${m[c]||'p-canal-in'}">${c}</span>`;};
+const statusPill= s=>{const m={'Prospect':'p-prospect','Ativo':'p-ativo','VIP':'p-vip','Inativo':'p-inativo'};return `<span class="pill ${m[s]||'p-prospect'}">${s}</span>`;};
+
+// FILTRO
+function getFiltered(){
+  return clientes.filter(c=>{
+    if(filtroStatus!=='todos'&&c.status!==filtroStatus) return false;
+    if(filtroCanal&&c.canal!==filtroCanal) return false;
+    if(filtroAtend&&c.atendente!==filtroAtend) return false;
+    if(buscaTxt){const q=buscaTxt.toLowerCase();if(!c.nome.toLowerCase().includes(q)&&!c.wpp.includes(q)&&!(c.atendente||'').toLowerCase().includes(q)) return false;}
+    return true;
+  });
+}
+function buscar(v){buscaTxt=v;renderDash();renderKanban();renderLista();}
+function filtrarLista(s,b){filtroStatus=s;document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderLista();renderKanban();}
+function filtrarCanal(v){filtroCanal=v;renderLista();renderKanban();}
+function filtrarAtendente(v){filtroAtend=v;renderLista();renderKanban();}
+function sortBy(f){sortField===f?sortAsc=!sortAsc:(sortField=f,sortAsc=true);renderLista();}
+
+// DASHBOARD
+function renderDash(){
+  const fat=clientes.reduce((s,c)=>s+tg(c),0);
+  const vips=clientes.filter(c=>c.status==='VIP').length;
+  document.getElementById('kpi-strip').innerHTML=[
+    {l:'Total clientes',   v:clientes.length,s:'na base',fmt:false},
+    {l:'Ativos + VIP',     v:clientes.filter(c=>c.status==='Ativo').length+vips,s:`${vips} VIP`,fmt:false},
+    {l:'Prospects',        v:clientes.filter(c=>c.status==='Prospect').length,s:'aguardando conversão',fmt:false},
+    {l:'Faturamento total',v:fat,s:'histórico completo',fmt:true,color:'green'},
+  ].map(k=>`<div class="kpi-card"><div class="kl">${k.l}</div><div class="kv ${k.color||''}">${k.fmt?fmt(k.v):k.v}</div><div class="ks">${k.s}</div></div>`).join('');
+
+  const top=[...clientes].filter(c=>tg(c)>0).sort((a,b)=>tg(b)-tg(a)).slice(0,6);
+  const da=document.getElementById('dash-ativos');
+  da.innerHTML=top.length?top.map(c=>{
+    const [bg,fg]=avatarColor(c.nome);
+    return `<div class="ativ-item" onclick="abrirModal(${c.id})">
+      <div class="ativ-avatar" style="background:#${bg};color:#${fg}">${initials(c.nome)}</div>
+      <div class="ativ-info"><div class="ativ-name">${c.nome}</div><div class="ativ-sub">${c.atendente||'—'} · ${c.canal}</div></div>
+      <div class="ativ-val">${fmtk(tg(c))}</div>
+    </div>`;
+  }).join(''):'<div class="empty-state"><div class="empty-icon">○</div><div class="empty-text">Nenhuma compra registrada</div></div>';
+
+  const etapas=[{n:'VIP',c:'VIP',cor:'#f59e0b'},{n:'Ativo',c:'Ativo',cor:'#1a7f5a'},{n:'Prospect',c:'Prospect',cor:'#4a6fa5'},{n:'Inativo',c:'Inativo',cor:'#9ca3af'}];
+  const maxE=Math.max(...etapas.map(e=>clientes.filter(x=>x.status===e.c).length),1);
+  document.getElementById('funil-chart').innerHTML=etapas.map(e=>{
+    const cnt=clientes.filter(x=>x.status===e.c).length;
+    return `<div class="funil-row"><div class="funil-label">${e.n}</div><div class="funil-bar-bg"><div class="funil-bar" style="width:${(cnt/maxE)*100}%;background:${e.cor}"></div></div><div class="funil-count">${cnt}</div></div>`;
+  }).join('');
+
+  const canaisC={};clientes.forEach(c=>{canaisC[c.canal]=(canaisC[c.canal]||0)+1;});
+  const topC=Object.entries(canaisC).sort((a,b)=>b[1]-a[1])[0];
+  const comC=clientes.filter(c=>tg(c)>0).length;
+  document.getElementById('stats-list').innerHTML=[
+    {l:'Canal top',         v:topC?`${topC[0]} (${topC[1]})`:'—'},
+    {l:'Ticket médio',      v:fmt(comC>0?clientes.reduce((s,c)=>s+tg(c),0)/comC:0)},
+    {l:'Com compras',       v:`${comC} de ${clientes.length}`},
+    {l:'Sem compras',       v:clientes.filter(c=>c.compras.length===0).length},
+    {l:'Atendentes ativos', v:[...new Set(clientes.map(c=>c.atendente).filter(Boolean))].length},
+  ].map(s=>`<div class="stat-row"><div class="stat-label">${s.l}</div><div class="stat-val">${s.v}</div></div>`).join('');
+}
+
+// KANBAN
+function renderKanban(){
+  const cols=[{id:'Prospect',label:'Prospect',cls:'prospect'},{id:'Ativo',label:'Ativo',cls:'ativo'},{id:'VIP',label:'VIP ⭐',cls:'vip'},{id:'Inativo',label:'Inativo',cls:'inativo'}];
+  const filtered=getFiltered();
+  const board=document.getElementById('kanban-board');
+  board.innerHTML=cols.map(col=>{
+    const cards=filtered.filter(c=>c.status===col.id);
+    return `<div class="k-col" data-status="${col.id}">
+      <div class="k-col-header ${col.cls}">
+        <span class="k-col-title">${col.label}</span>
+        <span class="k-col-count">${cards.length}</span>
+      </div>
+      <div class="k-cards" data-status="${col.id}">
+        ${cards.length?cards.map(c=>kCard(c)).join(''):`<div class="k-drop-placeholder" data-status="${col.id}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)">Solte aqui</span></div>`}
+      </div>
+    </div>`;
+  }).join('');
+
+  board.querySelectorAll('.k-card[draggable]').forEach(el=>{
+    el.addEventListener('dragstart',onDragStart);
+    el.addEventListener('dragend',onDragEnd);
+    el.addEventListener('click',()=>{if(!dragId) abrirModal(parseInt(el.dataset.id));});
+  });
+  board.querySelectorAll('.k-cards').forEach(el=>{
+    el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';});
+    el.addEventListener('dragenter',function(e){e.preventDefault();this.classList.add('drag-over');});
+    el.addEventListener('dragleave',function(e){if(!this.contains(e.relatedTarget)) this.classList.remove('drag-over');});
+    el.addEventListener('drop',onDrop);
+  });
+}
+
+function kCard(c){
+  const [bg,fg]=avatarColor(c.nome);
+  const val=tg(c);
+  return `<div class="k-card" draggable="true" data-id="${c.id}">
+    <div class="k-card-top">
+      <div class="k-avatar" style="background:#${bg};color:#${fg}">${initials(c.nome)}</div>
+      <div><div class="k-name">${c.nome}</div><div class="k-canal">${c.canal}</div></div>
+    </div>
+    ${val>0?`<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--green);margin-bottom:5px">${fmtk(val)}</div>`:''}
+    <div style="display:flex;justify-content:space-between">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3)">${c.atendente||'—'}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3)">${fmtD(c.ultimoContato)}</span>
+    </div>
+    <div class="k-drag-hint">⠿ segure e arraste para mover</div>
+  </div>`;
+}
+
+function onDragStart(e){
+  dragId=parseInt(this.dataset.id);
+  const c=clientes.find(x=>x.id===dragId);
+  ghostEl=document.createElement('div');ghostEl.className='drag-ghost';
+  ghostEl.textContent=c?c.nome:'';document.body.appendChild(ghostEl);
+  e.dataTransfer.setDragImage(ghostEl,0,0);e.dataTransfer.effectAllowed='move';
+  requestAnimationFrame(()=>this.classList.add('dragging'));
+}
+function onDragEnd(){
+  this.classList.remove('dragging');
+  if(ghostEl){ghostEl.remove();ghostEl=null;}
+  document.querySelectorAll('.k-cards.drag-over').forEach(el=>el.classList.remove('drag-over'));
+  dragId=null;
+}
+function onDrop(e){
+  e.preventDefault();this.classList.remove('drag-over');
+  const ns=this.dataset.status;
+  if(!dragId||!ns) return;
+  const idx=clientes.findIndex(c=>c.id===dragId);
+  if(idx===-1||clientes[idx].status===ns) return;
+  clientes[idx].status=ns;save(clientes);
+  toast(`${clientes[idx].nome} → ${ns}`);
+  dragId=null;renderKanban();renderDash();renderLista();
+}
+
+// LISTA
+function renderLista(){
+  let list=getFiltered().sort((a,b)=>{
+    let va=a[sortField],vb=b[sortField];
+    if(sortField==='totalGasto'){va=tg(a);vb=tg(b);}
+    if(va==null)va='';if(vb==null)vb='';
+    if(typeof va==='number') return sortAsc?va-vb:vb-va;
+    return sortAsc?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
+  });
+  document.getElementById('list-count').textContent=`${list.length} cliente${list.length!==1?'s':''}`;
+  const tb=document.getElementById('lista-tbody');
+  if(!list.length){tb.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⊘</div><div class="empty-text">Nenhum cliente encontrado</div></div></td></tr>`;return;}
+  tb.innerHTML=list.map(c=>{
+    const [bg,fg]=avatarColor(c.nome);const wpp=c.wpp.replace(/\D/g,'');
+    return `<tr onclick="abrirModal(${c.id})">
+      <td><div style="display:flex;align-items:center;gap:9px">
+        <div style="width:28px;height:28px;border-radius:50%;background:#${bg};color:#${fg};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">${initials(c.nome)}</div>
+        <div><div style="font-weight:500">${c.nome}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)">${c.wpp}</div></div>
+      </div></td>
+      <td>${statusPill(c.status)}</td><td>${canalPill(c.canal)}</td>
+      <td class="dim">${c.atendente||'—'}</td>
+      <td class="r grn">${tg(c)>0?fmt(tg(c)):'—'}</td>
+      <td class="dim mono">${fmtD(c.ultimoContato)}</td>
+      <td onclick="event.stopPropagation()">
+        <a class="wpp-btn" href="https://wa.me/55${wpp}" target="_blank" onclick="event.stopPropagation()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chamar
+        </a>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function updateAtendFilter(){
+  const atends=[...new Set(clientes.map(c=>c.atendente).filter(Boolean))].sort();
+  const sel=document.getElementById('atend-filter');const cur=sel.value;
+  sel.innerHTML='<option value="">Todos atendentes</option>'+atends.map(a=>`<option value="${a}"${a===cur?' selected':''}>${a}</option>`).join('');
+}
+
+// MODAL
+function abrirModal(id=null){
+  editId=id;comprasTemp=[];notasTemp=[];
+  if(id){
+    const c=clientes.find(x=>x.id===id);if(!c)return;
+    document.getElementById('modal-title').textContent=c.nome;
+    document.getElementById('f-nome').value=c.nome;
+    document.getElementById('f-wpp').value=c.wpp;
+    document.getElementById('f-canal').value=c.canal;
+    document.getElementById('f-atendente').value=c.atendente||'';
+    document.getElementById('f-status').value=c.status;
+    comprasTemp=[...(c.compras||[])];notasTemp=[...(c.notas||[])];
+    document.getElementById('btn-deletar').style.display='block';
+  } else {
+    document.getElementById('modal-title').textContent='Novo cliente';
+    ['f-nome','f-wpp','f-atendente','f-prod','f-val'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('f-canal').value='WhatsApp (ind.)';
+    document.getElementById('f-status').value='Prospect';
+    document.getElementById('btn-deletar').style.display='none';
+  }
+  renderComprasModal();renderNotasModal();
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('f-nome').focus();
+}
+function fecharModal(){document.getElementById('modal-overlay').classList.remove('open');editId=null;}
+function fecharModalOverlay(e){if(e.target===document.getElementById('modal-overlay')) fecharModal();}
+
+function renderComprasModal(){
+  const el=document.getElementById('compras-lista');
+  if(!comprasTemp.length){el.innerHTML='<div style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--t3);padding:4px 0">Nenhuma compra registrada</div>';return;}
+  el.innerHTML=comprasTemp.map((x,i)=>`<div class="purchase-item">
+    <div><div class="purchase-prod">${x.prod}</div><div class="purchase-date">${fmtD(x.data)}</div></div>
+    <div style="display:flex;align-items:center;gap:10px"><div class="purchase-val">${fmt(Number(x.val))}</div>
+    <button onclick="removeCompra(${i})" style="background:none;border:none;cursor:pointer;color:var(--t3);font-size:14px">×</button></div>
+  </div>`).join('');
+}
+function addCompra(){
+  const prod=document.getElementById('f-prod').value.trim();
+  const val=parseFloat(document.getElementById('f-val').value)||0;
+  const data=document.getElementById('f-data-compra').value||hoje();
+  if(!prod)return;
+  comprasTemp.push({prod,val,data});
+  document.getElementById('f-prod').value='';document.getElementById('f-val').value='';
+  renderComprasModal();
+}
+function removeCompra(i){comprasTemp.splice(i,1);renderComprasModal();}
+
+function renderNotasModal(){
+  const el=document.getElementById('notas-lista');
+  if(!notasTemp.length){el.innerHTML='<div style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--t3);padding:4px 0">Nenhuma anotação ainda</div>';return;}
+  el.innerHTML=[...notasTemp].reverse().map(n=>`<div class="note-item"><div class="note-date">${fmtD(n.data)}</div><div class="note-text">${n.texto}</div></div>`).join('');
+}
+function addNota(){
+  const txt=document.getElementById('f-nota').value.trim();if(!txt)return;
+  notasTemp.push({texto:txt,data:hoje()});
+  document.getElementById('f-nota').value='';renderNotasModal();
+}
+
+function salvarCliente(){
+  const nome=document.getElementById('f-nome').value.trim();
+  const wpp=document.getElementById('f-wpp').value.trim();
+  if(!nome||!wpp){alert('Nome e WhatsApp são obrigatórios.');return;}
+  const data={nome,wpp,canal:document.getElementById('f-canal').value,atendente:document.getElementById('f-atendente').value.trim(),status:document.getElementById('f-status').value,ultimoContato:hoje(),compras:comprasTemp,notas:notasTemp};
+  if(editId){const idx=clientes.findIndex(c=>c.id===editId);clientes[idx]={...clientes[idx],...data};}
+  else{data.id=Date.now();clientes.push(data);}
+  save(clientes);fecharModal();
+  renderDash();renderKanban();renderLista();updateAtendFilter();
+}
+function deletarCliente(){
+  if(!confirm('Excluir este cliente?'))return;
+  clientes=clientes.filter(c=>c.id!==editId);
+  save(clientes);fecharModal();
+  renderDash();renderKanban();renderLista();updateAtendFilter();
+}
+
+function toast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-family:"IBM Plex Mono",monospace;font-size:11px;padding:10px 20px;border-radius:6px;box-shadow:0 4px 16px rgba(15,32,68,.3);z-index:9999;transition:opacity .3s;white-space:nowrap';
+  t.textContent='✓ '+msg;document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},2200);
+}
+
+// IMPORTAR PLANILHA
+function importarPlanilha(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb_xl = XLSX.read(data, {type:'array', cellDates:true, raw:false});
+
+      // Tenta ler da aba "Exportar CRM" primeiro
+      // Se não funcionar (vazia), lê direto da aba "Pedidos"
+      let clientesMap = {};
+      let fonte = '';
+
+      // ── TENTATIVA 1: aba Exportar CRM ──
+      const sheetCRM = wb_xl.SheetNames.find(n => n === 'Exportar CRM');
+      if (sheetCRM) {
+        const ws = wb_xl.Sheets[sheetCRM];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+        // Headers na linha 6 (idx 5), dados a partir da 7 (idx 6)
+        const hRow = rows[5] || [];
+        const iN=hRow.indexOf('Cliente'), iW=hRow.indexOf('WhatsApp'),
+              iC=hRow.indexOf('Canal'), iA=hRow.indexOf('Atendente'),
+              iS=hRow.indexOf('Status CRM'), iG=hRow.indexOf('Total Gasto'),
+              iD=hRow.indexOf('Ultimo Pedido'), iP=hRow.indexOf('Produto Principal');
+
+        if (iN !== -1) {
+          for (let i = 6; i < rows.length; i++) {
+            const row = rows[i];
+            const nome = String(row[iN]||'').trim();
+            if (!nome) continue;
+            const wppRaw = String(row[iW]||'').trim();
+            const gasto  = parseFloat(String(row[iG]||'0').replace(/[^\d.,]/g,'').replace(',','.')) || 0;
+            const dataPed= String(row[iD]||'').trim();
+            let ultimoContato = hoje();
+            if (dataPed) {
+              const p = dataPed.split('/');
+              if (p.length===3) ultimoContato=`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+            }
+            clientesMap[nome.toLowerCase()] = {
+              nome,
+              wpp:   (wppRaw && wppRaw!=='(preencher)') ? wppRaw : '',
+              canal: String(row[iC]||'WhatsApp (ind.)').trim(),
+              atendente: String(row[iA]||'').trim(),
+              status: (['Prospect','Ativo','VIP','Inativo'].includes(String(row[iS]||'').trim())) ? String(row[iS]).trim() : 'Prospect',
+              ultimoContato,
+              compras: (String(row[iP]||'').trim() && gasto>0)
+                ? [{prod: String(row[iP]).trim(), val: gasto, data: ultimoContato}]
+                : [],
+              notas: [],
+            };
+          }
+          fonte = 'Exportar CRM';
+        }
+      }
+
+      // ── TENTATIVA 2: lê direto da aba Pedidos (fallback) ──
+      if (Object.keys(clientesMap).length === 0) {
+        const sheetPed = wb_xl.SheetNames.find(n => n === 'Pedidos');
+        if (!sheetPed) {
+          alert('Aba "Pedidos" não encontrada.\nVerifique se é a planilha PowerCorp correta.');
+          input.value=''; return;
+        }
+        const ws = wb_xl.Sheets[sheetPed];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
+        // Cabeçalhos: Nº Pedido(0) Data(1) Canal(2) Atendente(3) Cliente(4) Produto(5)
+        // Tipo(6) Qtd(7) CustoUnit(8) VendaUnit(9) CustoTotal(10) VendaTotal(11)
+        // Lucro(12) Margem(13) FormaPgto(14) StatusPgto(15) Rastreio(16) StatusEnvio(17)
+        // Headers na linha 3 (idx 2), dados a partir da linha 4 (idx 3)
+        for (let i = 3; i < rows.length; i++) {
+          const row = rows[i];
+          const nome = String(row[4]||'').trim();
+          if (!nome || nome === 'Cliente') continue;
+          const canal   = String(row[2]||'WhatsApp (ind.)').trim();
+          const atend   = String(row[3]||'').trim();
+          const produto = String(row[5]||'').trim();
+          const vendaRaw= String(row[11]||'0');
+          const venda   = parseFloat(vendaRaw.replace(/[^\d.,]/g,'').replace(',','.')) || 0;
+          const dataRaw = String(row[1]||'').trim();
+          let   dataFmt = hoje();
+          if (dataRaw) {
+            // pode vir como DD/MM/YYYY ou YYYY-MM-DD ou numero serial do Excel
+            if (dataRaw.includes('/')) {
+              const p=dataRaw.split('/');
+              if(p.length===3) dataFmt=`${p[2].length===4?p[2]:'20'+p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+            } else if (dataRaw.includes('-')) {
+              dataFmt = dataRaw;
+            }
+          }
+          const key = nome.toLowerCase();
+          if (!clientesMap[key]) {
+            clientesMap[key] = {
+              nome, wpp:'', canal, atendente:atend,
+              status: 'Prospect',
+              ultimoContato: dataFmt,
+              compras: [], notas: [],
+            };
+          }
+          // Acumula compras
+          if (produto && venda > 0) {
+            const jatem = clientesMap[key].compras.some(c=>c.prod===produto);
+            if (!jatem) clientesMap[key].compras.push({prod:produto, val:venda, data:dataFmt});
+          }
+          // Atualiza status com base no total gasto
+          const totalC = clientesMap[key].compras.reduce((s,x)=>s+Number(x.val),0);
+          if (totalC >= 3000) clientesMap[key].status = 'VIP';
+          else if (totalC > 0) clientesMap[key].status = 'Ativo';
+          // Data mais recente
+          if (dataFmt > clientesMap[key].ultimoContato) clientesMap[key].ultimoContato = dataFmt;
+          // Canal e atendente do pedido mais recente
+          clientesMap[key].canal = canal;
+          clientesMap[key].atendente = atend;
+        }
+        fonte = 'Pedidos';
+      }
+
+      const lista = Object.values(clientesMap);
+      if (lista.length === 0) {
+        alert('Nenhum cliente encontrado.\nVerifique se há pedidos cadastrados na aba Pedidos.');
+        input.value=''; return;
+      }
+
+      // Mesclar com clientes existentes
+      let importados=0, atualizados=0;
+      lista.forEach(novo => {
+        const existIdx = clientes.findIndex(c=>c.nome.toLowerCase()===novo.nome.toLowerCase());
+        if (existIdx !== -1) {
+          const exist = clientes[existIdx];
+          if (!exist.wpp && novo.wpp) clientes[existIdx].wpp = novo.wpp;
+          clientes[existIdx].canal        = novo.canal || exist.canal;
+          clientes[existIdx].atendente    = novo.atendente || exist.atendente;
+          clientes[existIdx].ultimoContato= novo.ultimoContato;
+          if (exist.status === 'Prospect' && novo.status !== 'Prospect') {
+            clientes[existIdx].status = novo.status;
+          }
+          novo.compras.forEach(nc => {
+            const jatem = exist.compras.some(c=>c.prod===nc.prod);
+            if (!jatem) clientes[existIdx].compras.push(nc);
+          });
+          atualizados++;
+        } else {
+          novo.id = Date.now() + Math.random();
+          clientes.push(novo);
+          importados++;
+        }
+      });
+
+      save(clientes);
+      renderDash(); renderKanban(); renderLista(); updateAtendFilter();
+      toast(`✓ ${importados} novo${importados!==1?'s':''} · ${atualizados} atualizado${atualizados!==1?'s':''}`);
+
+      setTimeout(() => alert(
+        `Importação concluída! (via: ${fonte})\n\n` +
+        `✓ ${importados} cliente${importados!==1?'s':''} novo${importados!==1?'s':''}\n` +
+        `✓ ${atualizados} cliente${atualizados!==1?'s':''} atualizado${atualizados!==1?'s':''}\n\n` +
+        `${importados>0?'Preencha o WhatsApp dos novos clientes no CRM.':''}`
+      ), 300);
+
+    } catch(err) {
+      alert('Erro ao ler o arquivo: ' + err.message);
+    }
+    input.value='';
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// INIT
+renderDash();
+renderKanban();
+renderLista();
+updateAtendFilter();
+mostrarBannerSeNecessario();
+</script>
+</body>
+</html>
