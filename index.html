@@ -134,6 +134,23 @@ body{background:var(--bg);color:var(--t1);font-family:'IBM Plex Sans',sans-serif
 .k-drop-placeholder{min-height:60px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;}
 .drag-ghost{position:fixed;top:-999px;left:-999px;background:var(--navy);color:#fff;border-radius:5px;padding:7px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;box-shadow:0 6px 20px rgba(15,32,68,.25);white-space:nowrap;pointer-events:none;z-index:9999;}
 
+/* ── MENU MOVER CARD (mobile) ── */
+.move-sheet{position:fixed;inset:0;z-index:600;display:none;}
+.move-sheet.open{display:block;}
+.move-sheet-backdrop{position:absolute;inset:0;background:rgba(15,32,68,.5);}
+.move-sheet-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:18px 18px 0 0;padding:0 0 calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 32px rgba(15,32,68,.2);}
+.move-sheet-handle{width:36px;height:4px;background:var(--bg2);border-radius:99px;margin:12px auto 4px;}
+.move-sheet-title{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;text-align:center;padding:8px 20px 14px;}
+.move-sheet-name{font-size:15px;font-weight:500;color:var(--navy);text-align:center;padding:0 20px 16px;border-bottom:1px solid var(--b1);}
+.move-col-btn{display:flex;align-items:center;gap:14px;width:100%;padding:15px 24px;background:transparent;border:none;border-bottom:1px solid var(--b1);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s;}
+.move-col-btn:last-child{border-bottom:none;}
+.move-col-btn:active{background:var(--skybg);}
+.move-col-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.move-col-label{font-size:14px;color:var(--navy);text-align:left;flex:1;}
+.move-col-current{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);}
+.move-col-btn.current-col{background:var(--skybg);}
+.move-col-btn.current-col .move-col-label{font-weight:500;}
+
 /* ── LISTA ── */
 .list-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .filter-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 13px;border-radius:4px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .15s;}
@@ -516,6 +533,15 @@ td.grn{color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:11px;f
   </div>
   <button class="install-banner-close" onclick="fecharBanner()">✕</button>
 </div>
+<div class="move-sheet" id="move-sheet">
+  <div class="move-sheet-backdrop" onclick="fecharMoveSheet()"></div>
+  <div class="move-sheet-panel">
+    <div class="move-sheet-handle"></div>
+    <div class="move-sheet-title">Mover para</div>
+    <div class="move-sheet-name" id="move-sheet-name"></div>
+    <div id="move-sheet-cols"></div>
+  </div>
+</div>
 <div class="modal-overlay" id="modal-overlay" onclick="fecharModalOverlay(event)">
   <div class="modal">
     <div class="modal-header">
@@ -591,7 +617,6 @@ let clientes=load();
 let filtroStatus='todos',filtroCanal='',filtroAtend='',buscaTxt='';
 let sortField='nome',sortAsc=true;
 let editId=null,comprasTemp=[],notasTemp=[];
-let dragId=null,ghostEl=null;
 
 // LEGENDA
 function fecharLegenda(){document.getElementById('legenda-box').style.display='none';}
@@ -708,11 +733,18 @@ function renderDash(){
 }
 
 // KANBAN
+const COLS_DEF=[
+  {id:'Prospect',label:'Prospect',cls:'prospect',cor:'#94a3b8'},
+  {id:'Ativo',   label:'Ativo',   cls:'ativo',   cor:'#1a7f5a'},
+  {id:'VIP',     label:'VIP ⭐',  cls:'vip',     cor:'#f59e0b'},
+  {id:'Inativo', label:'Inativo', cls:'inativo', cor:'#9ca3af'},
+];
+const isMobile=()=>window.innerWidth<=600;
+
 function renderKanban(){
-  const cols=[{id:'Prospect',label:'Prospect',cls:'prospect'},{id:'Ativo',label:'Ativo',cls:'ativo'},{id:'VIP',label:'VIP ⭐',cls:'vip'},{id:'Inativo',label:'Inativo',cls:'inativo'}];
   const filtered=getFiltered();
   const board=document.getElementById('kanban-board');
-  board.innerHTML=cols.map(col=>{
+  board.innerHTML=COLS_DEF.map(col=>{
     const cards=filtered.filter(c=>c.status===col.id);
     return `<div class="k-col" data-status="${col.id}">
       <div class="k-col-header ${col.cls}">
@@ -720,41 +752,78 @@ function renderKanban(){
         <span class="k-col-count">${cards.length}</span>
       </div>
       <div class="k-cards" data-status="${col.id}">
-        ${cards.length?cards.map(c=>kCard(c)).join(''):`<div class="k-drop-placeholder" data-status="${col.id}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)">Solte aqui</span></div>`}
+        ${cards.length
+          ? cards.map(c=>kCard(c)).join('')
+          : `<div class="k-drop-placeholder" data-status="${col.id}"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)">Vazio</span></div>`}
       </div>
     </div>`;
   }).join('');
 
-  board.querySelectorAll('.k-card[draggable]').forEach(el=>{
-    el.addEventListener('dragstart',onDragStart);
-    el.addEventListener('dragend',onDragEnd);
-    el.addEventListener('click',()=>{if(!dragId) abrirModal(parseInt(el.dataset.id));});
-  });
-  board.querySelectorAll('.k-cards').forEach(el=>{
-    el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';});
-    el.addEventListener('dragenter',function(e){e.preventDefault();this.classList.add('drag-over');});
-    el.addEventListener('dragleave',function(e){if(!this.contains(e.relatedTarget)) this.classList.remove('drag-over');});
-    el.addEventListener('drop',onDrop);
-  });
+  // Desktop: drag & drop nativo
+  if(!isMobile()){
+    board.querySelectorAll('.k-card[draggable]').forEach(el=>{
+      el.addEventListener('dragstart',onDragStart);
+      el.addEventListener('dragend',onDragEnd);
+      el.addEventListener('click',()=>{if(!dragId) abrirModal(parseInt(el.dataset.id));});
+    });
+    board.querySelectorAll('.k-cards').forEach(el=>{
+      el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';});
+      el.addEventListener('dragenter',function(e){e.preventDefault();this.classList.add('drag-over');});
+      el.addEventListener('dragleave',function(e){if(!this.contains(e.relatedTarget)) this.classList.remove('drag-over');});
+      el.addEventListener('drop',onDrop);
+    });
+  } else {
+    // Mobile: toque curto = editar, toque longo = mover
+    board.querySelectorAll('.k-card').forEach(el=>{
+      let pressTimer=null;
+      let moved=false;
+
+      el.addEventListener('touchstart',function(e){
+        moved=false;
+        pressTimer=setTimeout(()=>{
+          // Toque longo — abre menu mover
+          navigator.vibrate&&navigator.vibrate(30);
+          abrirMoveSheet(parseInt(this.dataset.id));
+        },450);
+      },{passive:true});
+
+      el.addEventListener('touchmove',function(){
+        moved=true;
+        clearTimeout(pressTimer);
+      },{passive:true});
+
+      el.addEventListener('touchend',function(e){
+        clearTimeout(pressTimer);
+        if(!moved){
+          // Toque curto — abre modal editar
+          abrirModal(parseInt(this.dataset.id));
+        }
+        moved=false;
+      });
+    });
+  }
 }
 
 function kCard(c){
   const [bg,fg]=avatarColor(c.nome);
   const val=tg(c);
-  return `<div class="k-card" draggable="true" data-id="${c.id}">
+  const mobile=isMobile();
+  return `<div class="k-card"${!mobile?' draggable="true"':''} data-id="${c.id}">
     <div class="k-card-top">
       <div class="k-avatar" style="background:#${bg};color:#${fg}">${initials(c.nome)}</div>
       <div><div class="k-name">${c.nome}</div><div class="k-canal">${c.canal}</div></div>
     </div>
     ${val>0?`<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--green);margin-bottom:5px">${fmtk(val)}</div>`:''}
-    <div style="display:flex;justify-content:space-between">
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
       <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3)">${c.atendente||'—'}</span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3)">${fmtD(c.ultimoContato)}</span>
     </div>
-    <div class="k-drag-hint">⠿ segure e arraste para mover</div>
+    <div class="k-drag-hint">${mobile?'👆 toque = editar  &nbsp;·&nbsp;  segure = mover':'⠿ segure e arraste para mover'}</div>
   </div>`;
 }
 
+// DRAG & DROP (desktop)
+let dragId=null,ghostEl=null;
 function onDragStart(e){
   dragId=parseInt(this.dataset.id);
   const c=clientes.find(x=>x.id===dragId);
@@ -778,6 +847,36 @@ function onDrop(e){
   clientes[idx].status=ns;save(clientes);
   toast(`${clientes[idx].nome} → ${ns}`);
   dragId=null;renderKanban();renderDash();renderLista();
+}
+
+// MOVER CARD (mobile — sheet de opções)
+let moveCardId=null;
+function abrirMoveSheet(id){
+  moveCardId=id;
+  const c=clientes.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('move-sheet-name').textContent=c.nome;
+  document.getElementById('move-sheet-cols').innerHTML=COLS_DEF.map(col=>`
+    <button class="move-col-btn${c.status===col.id?' current-col':''}" onclick="moverCard('${col.id}')">
+      <div class="move-col-dot" style="background:${col.cor}"></div>
+      <div class="move-col-label">${col.label}</div>
+      ${c.status===col.id?'<span class="move-col-current">atual</span>':''}
+    </button>`).join('');
+  document.getElementById('move-sheet').classList.add('open');
+}
+function fecharMoveSheet(){
+  document.getElementById('move-sheet').classList.remove('open');
+  moveCardId=null;
+}
+function moverCard(novoStatus){
+  if(!moveCardId) return;
+  const idx=clientes.findIndex(c=>c.id===moveCardId);
+  if(idx===-1||clientes[idx].status===novoStatus){fecharMoveSheet();return;}
+  clientes[idx].status=novoStatus;
+  save(clientes);
+  toast(`${clientes[idx].nome} → ${novoStatus}`);
+  fecharMoveSheet();
+  renderKanban();renderDash();renderLista();
 }
 
 // LISTA
